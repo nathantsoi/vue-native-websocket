@@ -35,18 +35,12 @@ Vue.use(VueNativeSock, 'ws://localhost:9090', store, {format: 'json'})
 #### On Vuejs instance usage
 ``` js
 var vm = new Vue({
-  sockets:{
-    connect: function(){
-      console.log('socket connected')
-    },
-    customEmit: function(val){
-      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-    }
-  },
   methods: {
-    clickButton: function(val){
-        // $socket is socket.io-client instance
-        this.$socket.emit('emit_method', val);
+    clickButton: function(val) {
+        // $socket is [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) instance
+        this.$socket.send('some data')
+        // or with {format: 'json'} enabled
+        this.$socket.sendObj({awesome: 'data'})
     }
   }
 })
@@ -55,13 +49,11 @@ var vm = new Vue({
 #### Dynamic socket event listeners
 Create a new listener
 ``` js
-this.$options.sockets.event_name = (data) => {
-    console.log(data)
-}
+this.$options.sockets.event_name = (data) => console.log(data)
 ```
 Remove existing listener
 ``` js
-delete this.$options.sockets.event_name;
+delete this.$options.sockets.event_name
 ```
 
 #### Vuex Store integration
