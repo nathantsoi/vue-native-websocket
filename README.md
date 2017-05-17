@@ -1,36 +1,35 @@
-# Vue-Socket.io
+# vue-native-websocket
 
-[![NPM version](https://img.shields.io/npm/v/vue-socket.io.svg)](https://www.npmjs.com/package/vue-socket.io)
-![VueJS v2 compatible](https://img.shields.io/badge/Vuejs%202-compatible-green.svg)
-<a href="https://www.npmjs.com/package/vue-socket.io"><img src="https://img.shields.io/npm/dt/vue-socket.io.svg" alt="Downloads"></a>
-<img id="dependency_badge" src="https://www.versioneye.com/javascript/metinseylan:vue-socket.io/2.0.1/badge.svg" alt="Dependency Badge" rel="nofollow">
-<a href="https://www.npmjs.com/package/vue-socket.io"><img src="https://img.shields.io/npm/l/vue-socket.io.svg" alt="License"></a>
-
-socket.io implementation for Vuejs 2 and Vuex
+native websocket implementation for Vuejs 2 and Vuex
 
 ## Install
 
 ``` bash
-npm install vue-socket.io --save
+yarn add vue-native-websocket
+
+# or
+
+npm install vue-native-websocket --save
 ```
 
 ## Usage
 #### Configuration
 Automatic socket connection from an URL string
 ``` js
-import VueSocketio from 'vue-socket.io';
-Vue.use(VueSocketio, 'http://socketserver.com:1923');
+import VueNativeSock from 'vue-native-websocket'
+Vue.use(VueNativeSock, 'ws://localhost:9090')
 ```
 
-Bind custom socket.io-client instance
+Enable Vuex integration, where `'./store'` is your local apps store:
 ``` js
-Vue.use(VueSocketio, socketio('http://socketserver.com:1923'));
+import store from './store'
+Vue.use(VueNativeSock, 'ws://localhost:9090', store)
 ```
 
-Enable Vuex integration
+Optionally enable JSON message passing:
 ``` js
-import store from './yourstore'
-Vue.use(VueSocketio, socketio('http://socketserver.com:1923'), store);
+import store from './store'
+Vue.use(VueNativeSock, 'ws://localhost:9090', store, {format: 'json'})
 ```
 
 #### On Vuejs instance usage
@@ -67,11 +66,25 @@ delete this.$options.sockets.event_name;
 
 #### Vuex Store integration
 
-Socket **mutations** always have `SOCKET_` prefix.
+Vuex integration works differently depending on if you've enabled a format
 
-Socket **actions** always have `socket_` prefix and the socket event name is `camelCased` (ex. `SOCKET_USER_MESSAGE` => `socket_userMessage`) 
+##### Without a format enabled
 
-You can use either one or another or both in your store. Namespaced modules are supported.
+Socket events will commit mutations on the root store corresponding to the following events
+
+`SOCKET_ONOPEN`
+
+`SOCKET_ONCLOSE`
+
+`SOCKET_ONERROR`
+
+`SOCKET_ONMESSAGE`
+
+Each callback is passed the raw websocket event object
+
+Update state in the open, close and error callbacks. You can also check the socket state directly with the `this.$socket` object on the main Vue object.
+
+Handle all the data in the `SOCKET_ONMESSAGE` mutation.
 
 ``` js
 import Vue from 'vue'
@@ -80,35 +93,50 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        connect: false,
-        message: null
-    },
-    mutations:{
-        SOCKET_CONNECT: (state,  status ) => {
-            state.connect = true;
-        },
-        SOCKET_USER_MESSAGE: (state,  message) => {
-            state.message = message;
-        }
-    },
-    actions: {
-        otherAction: (context, type) => {
-            return true;
-        },
-        socket_userMessage: (context, message) => {
-            context.dispatch('newMessage', message);
-            context.commit('NEW_MESSAGE_RECEIVED', message);
-            if (message.is_important) {
-                context.dispatch('alertImportantMessage', message);
-            }
-            ...
-        }
+  state: {
+    socket: {
+      isConnected: false,
+      message: '',
     }
+  },
+  mutations:{
+    SOCKET_ONOPEN (state, event)  {
+      state.socket.isConnected = true
+    },
+    SOCKET_ONCLOSE (state, event)  {
+      state.socket.isConnected = false
+    },
+    SOCKET_ONERROR (state, event)  {
+      console.error(state, event)
+    },
+    // default handler called for all methods
+    SOCKET_ONMESSAGE (event, message)  {
+      state.message = message
+    }
+  }
 })
 ```
 
-## Example
-[Realtime Car Tracker System](http://metinseylan.com/)
+##### With `format: 'json'` enabled
 
-[Simple Chat App](http://metinseylan.com/vuesocketio/)
+All data passed through the websocket is expected to be JSON.
+
+Each message is `JSON.parse`d if there is a data (content) response.
+
+If there is no data, the fallback `SOCKET_ON*` mutation is called with the original event data, as above.
+
+If there is a `.namespace` on the data, the message is sent to this `namespaced: true` store (be sure to turn this on in the store module).
+
+If there is a `.mutation` value in the response data, the corresponding mutation is called with the name `SOCKET_[mutation value]`
+
+If there is an `.action` value in the response data, the corresponding action is called with the name `SOCKET_[action value]`
+
+Use the `.sendObj({some: data})` method on the `$socket` object to send stringified json messages.
+
+## Examples
+
+TODO: post your example here!
+
+## Credits
+
+Derived from https://github.com/MetinSeylan/Vue-Socket.io

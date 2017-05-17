@@ -1,40 +1,43 @@
 {
-  "name": "vue-socket.io",
-  "version": "2.1.1-a",
-  "description": "socket.io implemantation for vuejs and vuex",
+  "name": "vue-native-websocket",
+  "version": "1.0.0",
+  "description": "native websocket implemantation for vuejs and vuex",
   "main": "dist/build.js",
   "scripts": {
-    "build": "webpack --progress --hide-modules"
+    "build": "eslint --ext .js src && webpack --progress --hide-modules",
+    "lint": "eslint --ext .js src"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetinSeylan/Vue-Socket.io.git"
+    "url": "git+https://github.com/nathantsoi/vue-native-websocket.git"
   },
   "keywords": [
     "vuejs",
     "socket",
     "vue",
-    "socket.io",
     "websocket",
-    "socket.io-client",
     "realtime",
     "flux",
     "vuex",
     "redux"
   ],
-  "author": "Metin Seylan",
+  "author": "Nathan Tsoi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MetinSeylan/Vue-Socket.io/issues"
+    "url": "https://github.com/nathantsoi/vue-native-websocket/issues"
   },
-  "homepage": "https://github.com/MetinSeylan/Vue-Socket.io#readme",
-  "dependencies": {
-    "socket.io-client": "^1.4.6"
-  },
+  "homepage": "https://github.com/nathantsoi/vue-native-websocket#readme",
   "devDependencies": {
-    "babel-cli": "^6.11.4",
-    "babel-loader": "^6.2.5",
-    "babel-preset-es2015": "^6.3.13",
-    "webpack": "^2.2.0-rc.3"
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "webpack": "^2.5.1"
   }
 }
