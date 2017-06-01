@@ -30,12 +30,17 @@ export default class {
     if (!eventName.startsWith('SOCKET_')) { return }
     if (this.format === 'json' && event.data) {
       let msg = JSON.parse(event.data)
-      let target = msg.namespace || ''
+      let target = msg.namespace || null
+      let concat = (a, b) => {
+        return a ? `${a}/${b}` : b
+      }
       if (msg.mutation) {
         this.store.commit([target, msg.mutation].join('/'), msg)
+        this.store.commit(concat(target, msg.mutation), msg)
       }
       if (msg.action) {
         this.store.dispatch([target, msg.action].join('/'), msg)
+        this.store.dispatch(concat(target, msg.action), msg)
       }
     } else {
       // default mutation
