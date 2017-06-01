@@ -102,7 +102,7 @@ export default new Vuex.Store({
       console.error(state, event)
     },
     // default handler called for all methods
-    SOCKET_ONMESSAGE (event, message)  {
+    SOCKET_ONMESSAGE (state, message)  {
       state.message = message
     }
   }
