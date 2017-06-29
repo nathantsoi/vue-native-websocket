@@ -19,7 +19,7 @@ Automatic socket connection from an URL string
 import VueNativeSock from 'vue-native-websocket'
 Vue.use(VueNativeSock, 'ws://localhost:9090')
 ```
-Set sub-protocol, this is optional option and default it's ''
+Set sub-protocol, this is optional option and default it's empty string.
 ``` js
 import VueNativeSock from 'vue-native-websocket'
 Vue.use(VueNativeSock, 'ws://localhost:9090', 'my-protocol')
