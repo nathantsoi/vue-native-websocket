@@ -1,14 +1,15 @@
 import Emitter from './Emitter'
 
 export default class {
-  constructor (connectionUrl, protocol, store, opts = {}) {
+  constructor (connectionUrl, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
-    this.connect(connectionUrl, protocol, opts)
-    if (store) { this.store = store }
+    this.connect(connectionUrl, opts)
+    if (opts.store) { this.store = opts.store }
     this.onEvent()
   }
 
-  connect (connectionUrl, protocol, opts = {}) {
+  connect (connectionUrl, opts = {}) {
+    let protocol = opts.protocol || ''
     this.WebSocket = opts.WebSocket || new WebSocket(connectionUrl, protocol)
     if (this.format === 'json') {
       if (!('sendObj' in this.WebSocket)) {

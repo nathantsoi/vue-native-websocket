@@ -9,7 +9,7 @@ describe("Main.js", () =>{
 
   it ('can be bound to the onopen event', (done) => {
     mockServer = new Server('ws://localhost:8080')
-    Vue.use(VueNativeSock, 'ws://localhost:8080', null)
+    Vue.use(VueNativeSock, 'ws://localhost:8080')
     let vm = new Vue()
     vm.$options.sockets.onopen = (data) => {
       expect(data.type).to.equal('open')

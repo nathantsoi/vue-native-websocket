@@ -13,31 +13,46 @@ npm install vue-native-websocket --save
 ```
 
 ## Usage
+
 #### Configuration
+
 Automatic socket connection from an URL string
+
 ``` js
 import VueNativeSock from 'vue-native-websocket'
 Vue.use(VueNativeSock, 'ws://localhost:9090')
 ```
-Set sub-protocol, this is optional option and default is empty string.
-``` js
-import VueNativeSock from 'vue-native-websocket'
-Vue.use(VueNativeSock, 'ws://localhost:9090', 'my-protocol')
-```
 
 Enable Vuex integration, where `'./store'` is your local apps store:
+
 ``` js
 import store from './store'
-Vue.use(VueNativeSock, 'ws://localhost:9090', store)
+Vue.use(VueNativeSock, 'ws://localhost:9090', { store: store })
 ```
 
+Set sub-protocol, this is optional option and default is empty string.
+
+``` js
+import VueNativeSock from 'vue-native-websocket'
+Vue.use(VueNativeSock, 'ws://localhost:9090', { protocol: 'my-protocol' })
+```
+
+
 Optionally enable JSON message passing:
+
+``` js
+Vue.use(VueNativeSock, 'ws://localhost:9090', { format: 'json' })
+```
+
+JSON message passing with a store:
+
 ``` js
 import store from './store'
-Vue.use(VueNativeSock, 'ws://localhost:9090', store, {format: 'json'})
+Vue.use(VueNativeSock, 'ws://localhost:9090', { store: store, format: 'json' })
 ```
 
 #### On Vuejs instance usage
+
 ``` js
 var vm = new Vue({
   methods: {
@@ -52,13 +67,17 @@ var vm = new Vue({
 ```
 
 #### Dynamic socket event listeners
-Create a new listener
+
+Create a new listener, for example:
+
 ``` js
-this.$options.sockets.event_name = (data) => console.log(data)
+this.$options.sockets.onmessage = (data) => console.log(data)
 ```
+
 Remove existing listener
+
 ``` js
-delete this.$options.sockets.event_name
+delete this.$options.sockets.onmessage
 ```
 
 #### Vuex Store integration
