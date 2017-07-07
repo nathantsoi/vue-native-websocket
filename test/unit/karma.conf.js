@@ -2,11 +2,13 @@ var webpackConfig = require('../../webpack.config.js')
 
 module.exports = function (config) {
   config.set({
-    browsers: ['ChromeHeadless'],
+    browsers: [
+      //'Chrome'
+      'ChromeHeadless'
+    ],
     frameworks: [
       'mocha',
-      'sinon-chai',
-      'websocket-server'
+      'sinon-chai'
     ],
     reporters: ['spec', 'coverage'],
     files: ['./index.js'],
@@ -23,17 +25,6 @@ module.exports = function (config) {
         { type: 'lcov', subdir: '.' },
         { type: 'text-summary' }
       ]
-    },
-    websocketServer: {
-      port: 9090,
-      beforeStart: (server) => {
-        server.on('request', (req) => {
-          console.log(new Date() + ' new websocket request...');
-        });
-      },
-      afterStart: (server) => {
-        console.log('Server now listening!');
-      }
     },
     customLaunchers: {
       ChromeHeadless: {

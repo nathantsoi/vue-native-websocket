@@ -3,13 +3,13 @@ import Emitter from './Emitter'
 export default class {
   constructor (connectionUrl, protocol, store, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
-    this.connect(connectionUrl, protocol)
+    this.connect(connectionUrl, protocol, opts)
     if (store) { this.store = store }
     this.onEvent()
   }
 
-  connect (connectionUrl, protocol) {
-    this.WebSocket = new WebSocket(connectionUrl, protocol)
+  connect (connectionUrl, protocol, opts = {}) {
+    this.WebSocket = opts.WebSocket || new WebSocket(connectionUrl, protocol)
     if (this.format === 'json') {
       if (!('sendObj' in this.WebSocket)) {
         this.WebSocket.sendObj = (obj) => this.WebSocket.send(JSON.stringify(obj))
@@ -28,18 +28,16 @@ export default class {
 
   passToStore (eventName, event) {
     if (!eventName.startsWith('SOCKET_')) { return }
+    let method = 'commit'
+    let target = eventName.toUpperCase()
+    let msg = event
     if (this.format === 'json' && event.data) {
-      let msg = JSON.parse(event.data)
-      let target = msg.namespace || ''
-      if (msg.mutation) {
-        this.store.commit([target, msg.mutation].join('/'), msg)
-      }
+      msg = JSON.parse(event.data)
+      target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
       if (msg.action) {
-        this.store.dispatch([target, msg.action].join('/'), msg)
+        method = 'dispatch'
       }
-    } else {
-      // default mutation
-      this.store.commit(eventName.toUpperCase(), event)
     }
+    this.store[method](target, msg)
   }
 }
