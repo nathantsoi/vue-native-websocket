@@ -37,7 +37,8 @@ describe ("Observer.js", () => {
 
     Vue.use(VueNativeSock, wsUrl)
     let vm = new Vue()
-    observer = new Observer(wsUrl, null, mockStore.object, {
+    observer = new Observer(wsUrl, {
+      store: mockStore.object,
       format: 'json',
       websocket: new WebSocket(wsUrl)
     })
@@ -62,7 +63,8 @@ describe ("Observer.js", () => {
 
     Vue.use(VueNativeSock, wsUrl)
     let vm = new Vue()
-    observer = new Observer(wsUrl, null, mockStore.object, {
+    observer = new Observer(wsUrl, {
+      store: mockStore.object,
       format: 'json',
       websocket: new WebSocket(wsUrl)
     })
