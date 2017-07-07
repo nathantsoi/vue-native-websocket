@@ -35,18 +35,8 @@ module.exports = function (config) {
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
         ]
-      },
-      ChromeTravis: {
-        base: 'Chrome',
-        flags: [
-          '--no-sandbox'
-        ]
       }
     }
-  }
-
-  if (process.env.TRAVIS) {
-    configuration.browsers = ['ChromeTravis']
   }
 
   config.set(configuration)
