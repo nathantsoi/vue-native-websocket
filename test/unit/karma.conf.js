@@ -1,7 +1,7 @@
 var webpackConfig = require('../../webpack.config.js')
 
 module.exports = function (config) {
-  config.set({
+  configuration = {
     browsers: [
       //'Chrome'
       'ChromeHeadless'
@@ -34,8 +34,21 @@ module.exports = function (config) {
           '--disable-gpu',
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
-        ],
+        ]
+      },
+      ChromeTravis: {
+        base: 'Chrome',
+        flags: [
+          '--no-sandbox'
+        ]
       }
     }
-  })
+  }
+
+  if (process.env.TRAVIS) {
+    configuration.browsers = ['ChromeTravis']
+  }
+
+  config.set(configuration)
 }
+
