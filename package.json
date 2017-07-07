@@ -7,7 +7,7 @@
     "build": "eslint --ext .js src && webpack --progress --hide-modules",
     "lint": "eslint --ext .js src",
     "unit": "karma start test/unit/karma.conf.js",
-    "test": "npm run unit"
+    "test": "karma start test/unit/karma.conf.js --single-run "
   },
   "repository": {
     "type": "git",
