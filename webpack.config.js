@@ -1,5 +1,6 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
+
 module.exports = {
   entry: ['./src/Main.js'],
   output: {
@@ -16,6 +17,11 @@ module.exports = {
       }
     })
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    }
+  },
   module: {
     loaders: [
       {
