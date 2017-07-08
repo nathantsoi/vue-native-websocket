@@ -145,7 +145,15 @@ If there is a `.namespace` on the data, the message is sent to this `namespaced:
 
 If there is a `.mutation` value in the response data, the corresponding mutation is called with the name `SOCKET_[mutation value]`
 
-If there is an `.action` value in the response data, the corresponding action is called with the name `SOCKET_[action value]`
+If there is an `.action` value in the response data ie. `action: 'customerAdded'`, the corresponding action is called by name:
+
+``` js
+actions: {
+    customerAdded (context) {
+      console.log('action received: customerAdded')     
+    }
+  }
+```
 
 Use the `.sendObj({some: data})` method on the `$socket` object to send stringified json messages.
 
