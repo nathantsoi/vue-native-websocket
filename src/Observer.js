@@ -10,7 +10,7 @@ export default class {
 
   connect (connectionUrl, opts = {}) {
     let protocol = opts.protocol || ''
-    this.WebSocket = opts.WebSocket || new WebSocket(connectionUrl, protocol)
+    this.WebSocket = opts.WebSocket || (protocol === '' ? new WebSocket(connectionUrl) : new WebSocket(connectionUrl, protocol))
     if (this.format === 'json') {
       if (!('sendObj' in this.WebSocket)) {
         this.WebSocket.sendObj = (obj) => this.WebSocket.send(JSON.stringify(obj))
@@ -37,6 +37,7 @@ export default class {
       target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
       if (msg.action) {
         method = 'dispatch'
+        target = msg.action
       }
     }
     this.store[method](target, msg)
