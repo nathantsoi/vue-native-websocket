@@ -150,7 +150,7 @@ If there is an `.action` value in the response data ie. `action: 'customerAdded'
 ``` js
 actions: {
     customerAdded (context) {
-      console.log('action received: customerAdded')     
+      console.log('action received: customerAdded')
     }
   }
 ```

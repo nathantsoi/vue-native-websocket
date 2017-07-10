@@ -2,6 +2,11 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.1
+
+- [bugfix]: call `new WebSocket` constructor without an empty sub-protocol string (throws on Chrome w/o this fix)
+- [docs]: update action `json` `action` documentation
+
 ## 2.0.0
 
 - [api change]: move `store` and `protocol` options from arguments to the  opts` hash
