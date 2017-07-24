@@ -2,6 +2,10 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.2
+
+- [bugfix]: handle json responses that do not include a `.mutation` value
+
 ## 2.0.1
 
 - [bugfix]: call `new WebSocket` constructor without an empty sub-protocol string (throws on Chrome w/o this fix)
