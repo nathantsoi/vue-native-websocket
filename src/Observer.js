@@ -34,8 +34,9 @@ export default class {
     let msg = event
     if (this.format === 'json' && event.data) {
       msg = JSON.parse(event.data)
-      target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
-      if (msg.action) {
+      if (msg.mutation) {
+        target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
+      } else if (msg.action) {
         method = 'dispatch'
         target = msg.action
       }
