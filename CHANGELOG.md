@@ -2,11 +2,12 @@
 
 This package is [semantic versioned](http://semver.org/)
 
-## 2.0.2
+## 2.0.3
 
 - [bugfix]: handle json responses that do not include a `.mutation` value
+- note that the 2.0.2 npm publish did not include built library and is identical to 2.0.1, 2.0.3 fixes and includes the change above
 
-## 2.0.1
+## 2.0.1, 2.0.3
 
 - [bugfix]: call `new WebSocket` constructor without an empty sub-protocol string (throws on Chrome w/o this fix)
 - [docs]: update action `json` `action` documentation
