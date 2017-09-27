@@ -59,7 +59,7 @@ var vm = new Vue({
     clickButton: function(val) {
         // $socket is [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) instance
         this.$socket.send('some data')
-        // or with {format: 'json'} enabled
+        // works only with {format: 'json'} enabled
         this.$socket.sendObj({awesome: 'data'})
     }
   }
