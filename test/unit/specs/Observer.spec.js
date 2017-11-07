@@ -53,10 +53,8 @@ describe('Observer.js', () => {
   it('passes a json action to the provided vuex store', (done) => {
     let expectedMsg = { action: 'setName', value: 'steve' }
     let mockStore = sinon.mock({
-      commit: () => {},
       dispatch: () => {}
     })
-    mockStore.expects('commit').withArgs('SOCKET_ONOPEN')
     mockStore.expects('dispatch').withArgs(expectedMsg.action, expectedMsg)
 
     mockServer = new Server(wsUrl)
@@ -108,10 +106,8 @@ describe('Observer.js', () => {
   it('passes a namespaced json action to the provided vuex store', (done) => {
     let expectedMsg = { namespace: 'users', action: 'setName', value: 'steve' }
     let mockStore = sinon.mock({
-      commit: () => {},
       dispatch: () => {}
     })
-    mockStore.expects('commit').withArgs('SOCKET_ONOPEN')
     mockStore.expects('dispatch').withArgs(expectedMsg.namespace + '/' + expectedMsg.action, expectedMsg)
 
     mockServer = new Server(wsUrl)
