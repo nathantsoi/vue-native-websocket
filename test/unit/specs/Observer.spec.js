@@ -24,7 +24,7 @@ describe ("Observer.js", () => {
   })
 
   // TODO: DRY
-  it ('passes a json event to the provided vuex store', (done) => {
+  it ('passes a json commit to the provided vuex store', (done) => {
     let expectedMsg = { mutation: 'setName', value: 'steve' }
     let mockStore = sinon.mock({ commit: () => {} })
     mockStore.expects('commit').withArgs('SOCKET_ONOPEN')
@@ -50,7 +50,7 @@ describe ("Observer.js", () => {
   })
 
   // TODO: DRY
-  it ('passes a namespaced json event to the provided vuex store', (done) => {
+  it ('passes a namespaced json commit to the provided vuex store', (done) => {
     let expectedMsg = { namespace: 'users', mutation: 'setName', value: 'steve' }
     let mockStore = sinon.mock({ commit: () => {} })
     mockStore.expects('commit').withArgs('SOCKET_ONOPEN')
