@@ -4,8 +4,8 @@ This package is [semantic versioned](http://semver.org/)
 
 ## 2.0.4
 
-- [feature]: namespace actions (thx @ThomasKlessen and double thx for tests / test updates!)
-- [feature]: reconnect (thx @weglov)
+- [feature]: namespace actions. thx @ThomasKlessen and double thx for tests / test updates!
+- [feature]: reconnect. thx @weglov
 
 ## 2.0.3
 
