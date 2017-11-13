@@ -8,9 +8,9 @@ export default class {
 
     this.reconnection = this.opts.reconnection || false
     this.reconnectionAttempts = this.opts.reconnectionAttempts || Infinity
-    this.reconnectionCount = this.reconnectionAttempts
     this.reconnectionDelay = this.opts.reconnectionDelay || 1000
     this.reconnectTimeoutId = 0
+    this.reconnectionCount = 0
 
     this.connect(connectionUrl, opts)
 
@@ -31,8 +31,8 @@ export default class {
   }
 
   reconnect () {
-    if (this.reconnectionCount > 0) {
-      this.reconnectionCount--
+    if (this.reconnectionCount <= this.reconnectionAttempts) {
+      this.reconnectionCount++
       clearTimeout(this.reconnectTimeoutId)
 
       this.reconnectTimeoutId = setTimeout(() => {
@@ -53,7 +53,7 @@ export default class {
 
         if (this.store) { this.passToStore('SOCKET_' + eventType, event) }
 
-        if (this.reconnection && this.eventType === 'onopen') { this.reconnectionCount = this.reconnectionAttempts }
+        if (this.reconnection && this.eventType === 'onopen') { this.reconnectionCount = 0 }
 
         if (this.reconnection && eventType === 'onclose') { this.reconnect(event) }
       }
