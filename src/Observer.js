@@ -38,7 +38,7 @@ export default class {
         target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
       } else if (msg.action) {
         method = 'dispatch'
-        target = msg.action
+        target = [msg.namespace || '', msg.action].filter((e) => !!e).join('/')
       }
     }
     this.store[method](target, msg)
