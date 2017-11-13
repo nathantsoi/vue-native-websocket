@@ -51,6 +51,16 @@ import store from './store'
 Vue.use(VueNativeSock, 'ws://localhost:9090', { store: store, format: 'json' })
 ```
 
+Enable ws reconnect automatically:
+
+``` js
+Vue.use(VueNativeSock, 'ws://localhost:9090', { 
+  reconnection: true, // (Boolean) whether to reconnect automatically (false)
+  reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
+  reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
+})
+```
+
 #### On Vuejs instance usage
 
 ``` js
@@ -102,6 +112,8 @@ Update state in the open, close and error callbacks. You can also check the sock
 
 Handle all the data in the `SOCKET_ONMESSAGE` mutation.
 
+Reconect events will commit mutations `SOCKET_RECONNECT` and `SOCKET_RECONNECT_ERROR`.
+
 ``` js
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -113,6 +125,7 @@ export default new Vuex.Store({
     socket: {
       isConnected: false,
       message: '',
+      reconnectError: false,
     }
   },
   mutations:{
@@ -128,7 +141,14 @@ export default new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
       state.message = message
-    }
+    },
+    // mutations for reconnect methods
+    [ws.WS_RECONNECT](state, count) {
+      console.info(state, count)
+    },
+    [ws.WS_RECONNECT_ERROR](state) {
+      state.socket.reconnectError = true;
+    },
   }
 })
 ```

@@ -3,7 +3,17 @@ import Emitter from './Emitter'
 export default class {
   constructor (connectionUrl, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
+    this.connectionUrl = connectionUrl
+    this.opts = opts
+
+    this.reconnection = this.opts.reconnection || false
+    this.reconnectionAttempts = this.opts.reconnectionAttempts || Infinity
+    this.reconnectionDelay = this.opts.reconnectionDelay || 1000
+    this.reconnectTimeoutId = 0
+    this.reconnectionCount = 0
+
     this.connect(connectionUrl, opts)
+
     if (opts.store) { this.store = opts.store }
     this.onEvent()
   }
@@ -16,13 +26,36 @@ export default class {
         this.WebSocket.sendObj = (obj) => this.WebSocket.send(JSON.stringify(obj))
       }
     }
+
+    return this.WebSocket
+  }
+
+  reconnect () {
+    if (this.reconnectionCount <= this.reconnectionAttempts) {
+      this.reconnectionCount++
+      clearTimeout(this.reconnectTimeoutId)
+
+      this.reconnectTimeoutId = setTimeout(() => {
+        if (this.store) { this.passToStore('SOCKET_RECONNECT', this.reconnectionCount) }
+
+        this.connect(this.connectionUrl, this.opts)
+        this.onEvent()
+      }, this.reconnectionDelay)
+    } else {
+      if (this.store) { this.passToStore('SOCKET_RECONNECT_ERROR', true) }
+    }
   }
 
   onEvent () {
     ['onmessage', 'onclose', 'onerror', 'onopen'].forEach((eventType) => {
       this.WebSocket[eventType] = (event) => {
         Emitter.emit(eventType, event)
+
         if (this.store) { this.passToStore('SOCKET_' + eventType, event) }
+
+        if (this.reconnection && this.eventType === 'onopen') { this.reconnectionCount = 0 }
+
+        if (this.reconnection && eventType === 'onclose') { this.reconnect(event) }
       }
     })
   }
