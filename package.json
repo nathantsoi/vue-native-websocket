@@ -1,6 +1,6 @@
 {
   "name": "vue-native-websocket",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "native websocket implemantation for vuejs and vuex",
   "main": "dist/build.js",
   "scripts": {

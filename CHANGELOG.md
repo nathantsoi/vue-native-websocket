@@ -2,6 +2,10 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.5
+
+- [bugfix]: fixed context for events callback. thx [@n5leon](https://github.com/n5leon)
+
 ## 2.0.4
 
 - [feature]: namespace actions. thx [@ThomasKlessen](https://github.com/ThomasKlessen) and double thx for tests / test updates!
