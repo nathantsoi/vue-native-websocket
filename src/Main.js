@@ -12,16 +12,17 @@ export default {
 
     Vue.mixin({
       created () {
+        let vm = this
         let sockets = this.$options['sockets']
 
         this.$options.sockets = new Proxy({}, {
           set (target, key, value) {
-            Emitter.addListener(key, value, this)
+            Emitter.addListener(key, value, vm)
             target[key] = value
             return true
           },
           deleteProperty (target, key) {
-            Emitter.removeListener(key, this.$options.sockets[key], this)
+            Emitter.removeListener(key, vm.$options.sockets[key], vm)
             delete target.key
             return true
           }
