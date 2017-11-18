@@ -2,6 +2,8 @@
 
 - make changes
 
+- run `yarn test` and make sure all tests pass
+
 - run `yarn build` and commit new build file
 
 - bump version in package.json according to semver.org rules
