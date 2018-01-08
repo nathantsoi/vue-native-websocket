@@ -143,10 +143,10 @@ export default new Vuex.Store({
       state.message = message
     },
     // mutations for reconnect methods
-    [ws.WS_RECONNECT](state, count) {
+    SOCKET_RECONNECT(state, count) {
       console.info(state, count)
     },
-    [ws.WS_RECONNECT_ERROR](state) {
+    SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true;
     },
   }

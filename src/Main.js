@@ -36,7 +36,6 @@ export default {
       },
       beforeDestroy () {
         let sockets = this.$options['sockets']
-        clearTimeout(observer.reconnectTimeoutId)
 
         if (sockets) {
           Object.keys(sockets).forEach((key) => {
