@@ -2,6 +2,10 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.6
+
+- [bugfix]: reconnection thx [@weglov](https://github.com/weglov)
+
 ## 2.0.5
 
 - [bugfix]: fixed context for events callback. thx [@n5leon](https://github.com/n5leon)
