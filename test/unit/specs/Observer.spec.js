@@ -130,4 +130,52 @@ describe('Observer.js', () => {
       mockServer.stop(done)
     }, 100)
   })
+
+  describe('reconnection feature', () => {
+    let observer, mockServer, vm, mockStore
+    let wsUrl = 'ws://localhost:8080'
+
+    beforeEach(() => {
+      mockServer = new Server(wsUrl)
+      mockServer.on('connection', ws => ws.send('hi'))
+      Vue.use(VueNativeSock, wsUrl)
+      vm = new Vue()
+      mockStore = sinon.mock({ commit: () => {} })
+
+      observer = new Observer(wsUrl, {
+        store: mockStore.object,
+        reconnection: true,
+        reconnectionAttempts: 2,
+        WebSocket: new WebSocket(wsUrl),
+      })
+    })
+
+    it('calls #reconnect() method', (done) => {
+      sinon.spy(observer, 'reconnect');
+      mockServer.close()
+
+      expect(observer.reconnect).to.called
+      mockServer.stop(done)
+    })
+
+    it('fires SOCKET_RECONNECT event', (done) => {
+      sinon.spy(observer, 'passToStore');
+      const clock = sinon.useFakeTimers()
+      mockServer.close()
+      clock.tick(1500);
+
+      expect(observer.passToStore).to.have.been.calledWith('SOCKET_RECONNECT')
+      mockServer.stop(done)
+    })
+
+    it('fires SOCKET_RECONNECT_ERROR event, after all attemps', (done) => {
+      sinon.spy(observer, 'passToStore');
+      observer.reconnectionCount = 2
+      observer.reconnectionAttempts = 1
+      mockServer.close()
+
+      expect(observer.passToStore).to.have.been.calledWith('SOCKET_RECONNECT_ERROR')
+      mockServer.stop(done)
+    })
+  })
 })
