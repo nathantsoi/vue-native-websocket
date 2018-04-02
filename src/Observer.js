@@ -25,6 +25,13 @@ export default class {
       if (!('sendObj' in this.WebSocket)) {
         this.WebSocket.sendObj = (obj) => this.WebSocket.send(JSON.stringify(obj))
       }
+
+      if (!('disConnect' in this.WebSocket)) {
+        this.WebSocket.disConnect = () => {
+          this.WebSocket.close()
+          delete this.WebSocket
+        }
+      }
     }
 
     return this.WebSocket
