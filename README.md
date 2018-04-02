@@ -37,7 +37,6 @@ import VueNativeSock from 'vue-native-websocket'
 Vue.use(VueNativeSock, 'ws://localhost:9090', { protocol: 'my-protocol' })
 ```
 
-
 Optionally enable JSON message passing:
 
 ``` js
@@ -59,6 +58,12 @@ Vue.use(VueNativeSock, 'ws://localhost:9090', {
   reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
   reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
 })
+```
+
+DisConnect this websocket
+
+``` js
+this.$socket.disConnect();
 ```
 
 #### On Vuejs instance usage
