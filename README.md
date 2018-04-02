@@ -61,6 +61,18 @@ Vue.use(VueNativeSock, 'ws://localhost:9090', {
 })
 ```
 
+Manage connection manually:
+
+``` js
+Vue.use(VueNativeSock, 'ws://localhost:9090', {
+  connectManually: true,
+})
+const vm = new Vue()
+vm.$connect()
+// do stuff with WebSockets
+vm.$disconnect()
+```
+
 #### On Vuejs instance usage
 
 ``` js
