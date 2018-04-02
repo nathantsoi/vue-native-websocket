@@ -6,9 +6,18 @@ export default {
   install (Vue, connection, opts = {}) {
     if (!connection) { throw new Error('[vue-native-socket] cannot locate connection') }
 
-    let observer = new Observer(connection, opts)
+    let observer = null
 
-    Vue.prototype.$socket = observer.WebSocket
+    Vue.prototype.$connect = function () {
+      observer = new Observer(connection, opts)
+      Vue.prototype.$socket = observer.WebSocket
+    }
+
+    Vue.prototype.$disconnect = function () {
+      observer.reconnection = false
+      Vue.prototype.$socket.close()
+      delete Vue.prototype.$socket
+    }
 
     Vue.mixin({
       created () {
