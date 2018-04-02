@@ -8,15 +8,20 @@ export default {
 
     let observer = null
 
-    Vue.prototype.$connect = function () {
-      observer = new Observer(connection, opts)
-      Vue.prototype.$socket = observer.WebSocket
-    }
+    if (opts.connectManually) {
+      Vue.prototype.$connect = function () {
+        observer = new Observer(connection, opts)
+        Vue.prototype.$socket = observer.WebSocket
+      }
 
-    Vue.prototype.$disconnect = function () {
-      observer.reconnection = false
-      Vue.prototype.$socket.close()
-      delete Vue.prototype.$socket
+      Vue.prototype.$disconnect = function () {
+        observer.reconnection = false
+        Vue.prototype.$socket.close()
+        delete Vue.prototype.$socket
+      }
+    } else {
+      observer = new Observer(connection, opts)
+      Vue.prototype.$socket = observer.WebSockekt
     }
 
     Vue.mixin({
