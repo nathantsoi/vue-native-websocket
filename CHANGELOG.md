@@ -2,6 +2,9 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.7
+- [feature]: manual connect/disconnect
+
 ## 2.0.6
 
 - [bugfix]: reconnection thx [@weglov](https://github.com/weglov)
