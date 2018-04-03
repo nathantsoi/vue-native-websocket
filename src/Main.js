@@ -9,12 +9,12 @@ export default {
     let observer = null
 
     if (opts.connectManually) {
-      Vue.prototype.$connect = function () {
+      Vue.prototype.$connect = () => {
         observer = new Observer(connection, opts)
         Vue.prototype.$socket = observer.WebSocket
       }
 
-      Vue.prototype.$disconnect = function () {
+      Vue.prototype.$disconnect = () => {
         if (observer && observer.reconnection) { observer.reconnection = false }
         if (Vue.prototype.$socket) {
           Vue.prototype.$socket.close()
