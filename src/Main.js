@@ -23,7 +23,7 @@ export default {
       }
     } else {
       observer = new Observer(connection, opts)
-      Vue.prototype.$socket = observer.WebSockekt
+      Vue.prototype.$socket = observer.WebSocket
     }
 
     Vue.mixin({
