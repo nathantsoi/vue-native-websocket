@@ -23,6 +23,20 @@ describe('Observer.js', () => {
     }, vm)
   })
 
+  it('fires onopen event skip scheme', (done) => {
+    mockServer = new Server(wsUrl)
+    mockServer.on('connection', ws => {
+      ws.send('hi')
+    })
+    Vue.use(VueNativeSock, '//localhost:8080')
+    let vm = new Vue()
+    observer = new Observer(wsUrl)
+    Emitter.addListener('onopen', (data) => {
+      expect(data.type).to.equal('open')
+      mockServer.stop(done)
+    }, vm)
+  })
+
   // TODO: DRY
   it('passes a json commit to the provided vuex store', (done) => {
     let expectedMsg = { mutation: 'setName', value: 'steve' }
