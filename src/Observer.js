@@ -11,10 +11,12 @@ export default class {
     this.reconnectionDelay = this.opts.reconnectionDelay || 1000
     this.reconnectTimeoutId = 0
     this.reconnectionCount = 0
+    this.storeDefaultNamespace = null
 
     this.connect(connectionUrl, opts)
 
     if (opts.store) { this.store = opts.store }
+    if (opts.storeDefaultNamespace) { this.storeDefaultNamespace = opts.storeDefaultNamespace }
     this.onEvent()
   }
 
@@ -63,17 +65,21 @@ export default class {
   passToStore (eventName, event) {
     if (!eventName.startsWith('SOCKET_')) { return }
     let method = 'commit'
-    let target = eventName.toUpperCase()
+    let target = [eventName.toUpperCase()]
     let msg = event
+
     if (this.format === 'json' && event.data) {
       msg = JSON.parse(event.data)
       if (msg.mutation) {
-        target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
+        target.push(msg.mutation)
       } else if (msg.action) {
         method = 'dispatch'
-        target = [msg.namespace || '', msg.action].filter((e) => !!e).join('/')
+        target.push(msg.action)
       }
+      target.unshift(msg.namespace || this.storeDefaultNamespace)
+    } else {
+      target.unshift(this.storeDefaultNamespace)
     }
-    this.store[method](target, msg)
+    this.store[method](target.filter((e) => !!e).join('/'), msg)
   }
 }
