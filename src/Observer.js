@@ -64,7 +64,7 @@ export default class {
 
   passToStore (eventName, event) {
     if (this.passToStoreHandler) {
-      this.passToStoreHandler(eventName, event, this.defaultPassToStore)
+      this.passToStoreHandler(eventName, event, this.defaultPassToStore.bind(this))
     } else {
       this.defaultPassToStore(eventName, event)
     }
