@@ -54,7 +54,7 @@ Vue.use(VueNativeSock, 'ws://localhost:9090', { store: store, format: 'json' })
 Enable ws reconnect automatically:
 
 ``` js
-Vue.use(VueNativeSock, 'ws://localhost:9090', { 
+Vue.use(VueNativeSock, 'ws://localhost:9090', {
   reconnection: true, // (Boolean) whether to reconnect automatically (false)
   reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
   reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
@@ -188,6 +188,50 @@ actions: {
 ```
 
 Use the `.sendObj({some: data})` method on the `$socket` object to send stringified json messages.
+
+##### Custom socket event handling
+
+Provide you own custom code to handle events received via the `passToStoreHandler` option. The function you provide will be passed the following arguments:
+
+1. event name
+2. event
+3. original/default handler code function `function (eventName, event)`. This allows you to optionally do some basic preprocessing before handing the event over to the original handler.
+
+The original passToStore code is used if no `passToStoreHandler` is configured.
+
+Here is an example of passing in a custom handler. This has the original passToStore code to give you an example of what you can do:
+
+``` js
+Vue.use(VueNativeSock, 'ws://localhost:9090', {
+  passToStoreHandler: function (eventName, event) {
+    if (!eventName.startsWith('SOCKET_')) { return }
+    let method = 'commit'
+    let target = eventName.toUpperCase()
+    let msg = event
+    if (this.format === 'json' && event.data) {
+      msg = JSON.parse(event.data)
+      if (msg.mutation) {
+        target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
+      } else if (msg.action) {
+        method = 'dispatch'
+        target = [msg.namespace || '', msg.action].filter((e) => !!e).join('/')
+      }
+    }
+    this.store[method](target, msg)
+  }
+})
+```
+
+Here is an example of do some preprocessing, then pass the event onto the original handler code:
+
+``` js
+Vue.use(VueNativeSock, 'ws://localhost:9090', {
+  passToStoreHandler: function (eventName, event, next) {
+    event.data = event.should_have_been_named_data
+    next(eventName, event)
+  }
+})
+```
 
 ## Examples
 

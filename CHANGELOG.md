@@ -2,6 +2,9 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.8
+- [feature]: custom pass to store logic. Defaults to original passToStore code if no custom logic provided
+
 ## 2.0.7
 - [feature]: manual connect/disconnect
 
