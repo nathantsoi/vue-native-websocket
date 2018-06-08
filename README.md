@@ -152,7 +152,7 @@ export default new Vuex.Store({
     },
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
-      state.message = message
+      state.socket.message = message
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
