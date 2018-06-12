@@ -37,7 +37,6 @@ import VueNativeSock from 'vue-native-websocket'
 Vue.use(VueNativeSock, 'ws://localhost:9090', { protocol: 'my-protocol' })
 ```
 
-
 Optionally enable JSON message passing:
 
 ``` js
@@ -164,6 +163,67 @@ export default new Vuex.Store({
   }
 })
 ```
+
+##### With custom mutation names
+
+``` js
+// store.js
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {
+    socket: {
+      isConnected: false,
+      message: '',
+      reconnectError: false,
+    }
+  },
+  mutations:{
+    SOCKET_ONOPEN (state, event)  {
+      state.socket.isConnected = true
+    },
+    SOCKET_ONCLOSE (state, event)  {
+      state.socket.isConnected = false
+    },
+    SOCKET_ONERROR (state, event)  {
+      console.error(state, event)
+    },
+    // default handler called for all methods
+    SOCKET_ONMESSAGE (state, message)  {
+      state.socket.message = message
+    },
+    // mutations for reconnect methods
+    SOCKET_RECONNECT(state, count) {
+      console.info(state, count)
+    },
+    SOCKET_RECONNECT_ERROR(state) {
+      state.socket.reconnectError = true;
+    },
+  }
+})
+
+// index.js
+import store from './store'
+
+const mutations = {
+    SOCKET_ONOPEN: '✅ Socket connected!',
+    SOCKET_ONCLOSE: '❌ Socket disconnected!',
+    SOCKET_ONERROR: '❌ Socket Error!!!',
+    SOCKET_ONMESSAGE: 'Websocket message received',
+    SOCKET_RECONNECT: 'Websocket reconnected',
+    SOCKET_RECONNECT_ERROR: 'Websocket is having issues reconnecting..'
+};
+
+Vue.use(VueNativeSock, 'ws://localhost:9090', {
+    store: store,
+    format: 'json',
+    mutations: mutations
+})
+```
+
 
 ##### With `format: 'json'` enabled
 
