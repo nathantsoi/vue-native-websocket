@@ -4,12 +4,10 @@ import Emitter from './Emitter'
 export default {
 
   install (Vue, connection, opts = {}) {
-    if (!connection) { throw new Error('[vue-native-socket] cannot locate connection') }
-
     let observer = null
 
     if (opts.connectManually) {
-      Vue.prototype.$connect = () => {
+      Vue.prototype.$connect = (connection, opts) => {
         observer = new Observer(connection, opts)
         Vue.prototype.$socket = observer.WebSocket
       }
@@ -22,6 +20,7 @@ export default {
         }
       }
     } else {
+      if (!connection) { throw new Error('[vue-native-socket] cannot locate connection') }
       observer = new Observer(connection, opts)
       Vue.prototype.$socket = observer.WebSocket
     }
