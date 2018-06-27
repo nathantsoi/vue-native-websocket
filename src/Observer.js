@@ -12,6 +12,8 @@ export default class {
     this.reconnectTimeoutId = 0
     this.reconnectionCount = 0
 
+    this.passToStoreHandler = this.opts.passToStoreHandler || false
+
     this.connect(connectionUrl, opts)
 
     if (opts.store) { this.store = opts.store }
@@ -61,6 +63,14 @@ export default class {
   }
 
   passToStore (eventName, event) {
+    if (this.passToStoreHandler) {
+      this.passToStoreHandler(eventName, event, this.defaultPassToStore.bind(this))
+    } else {
+      this.defaultPassToStore(eventName, event)
+    }
+  }
+
+  defaultPassToStore (eventName, event) {
     if (!eventName.startsWith('SOCKET_')) { return }
     let method = 'commit'
     let target = eventName.toUpperCase()
