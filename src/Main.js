@@ -8,6 +8,10 @@ export default {
 
     let observer = null
 
+    opts.$setInstance = (wsInstance) => {
+      Vue.prototype.$socket = wsInstance
+    }
+
     if (opts.connectManually) {
       Vue.prototype.$connect = () => {
         observer = new Observer(connection, opts)

@@ -55,7 +55,10 @@ export default class {
 
         if (this.store) { this.passToStore('SOCKET_' + eventType, event) }
 
-        if (this.reconnection && eventType === 'onopen') { this.reconnectionCount = 0 }
+        if (this.reconnection && eventType === 'onopen') {
+          this.opts.$setInstance(event.currentTarget)
+          this.reconnectionCount = 0
+        }
 
         if (this.reconnection && eventType === 'onclose') { this.reconnect() }
       }
