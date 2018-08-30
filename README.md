@@ -162,14 +162,14 @@ export default new Vuex.Store({
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true;
     },
-  }
-},
-actions: {
+  },
+  actions: {
     sendMessage: function(context, message) {
       .....
       Vue.prototype.$socket.send(message)
       .....
     }
+  }
 })
 ```
 
