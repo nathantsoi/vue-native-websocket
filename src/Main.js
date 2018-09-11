@@ -29,38 +29,44 @@ export default {
       observer = new Observer(connection, opts)
       Vue.prototype.$socket = observer.WebSocket
     }
+    const hasProxy = typeof Proxy !== 'undefined' && typeof Proxy === 'function' && /native code/.test(Proxy.toString())
 
     Vue.mixin({
       created () {
         let vm = this
         let sockets = this.$options['sockets']
 
-        this.$options.sockets = new Proxy({}, {
-          set (target, key, value) {
-            Emitter.addListener(key, value, vm)
-            target[key] = value
-            return true
-          },
-          deleteProperty (target, key) {
-            Emitter.removeListener(key, vm.$options.sockets[key], vm)
-            delete target.key
-            return true
-          }
-        })
-
-        if (sockets) {
-          Object.keys(sockets).forEach((key) => {
-            this.$options.sockets[key] = sockets[key]
+        if (hasProxy) {
+          this.$options.sockets = new Proxy({}, {
+            set (target, key, value) {
+              Emitter.addListener(key, value, vm)
+              target[key] = value
+              return true
+            },
+            deleteProperty (target, key) {
+              Emitter.removeListener(key, vm.$options.sockets[key], vm)
+              delete target.key
+              return true
+            }
           })
+          if (sockets) {
+            Object.keys(sockets).forEach((key) => {
+              this.$options.sockets[key] = sockets[key]
+            })
+          }
+        } else {
+          Object.seal(this.$options.sockets)
         }
       },
       beforeDestroy () {
-        let sockets = this.$options['sockets']
+        if (hasProxy) {
+          let sockets = this.$options['sockets']
 
-        if (sockets) {
-          Object.keys(sockets).forEach((key) => {
-            delete this.$options.sockets[key]
-          })
+          if (sockets) {
+            Object.keys(sockets).forEach((key) => {
+              delete this.$options.sockets[key]
+            })
+          }
         }
       }
     })
