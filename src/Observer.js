@@ -3,10 +3,12 @@ import Emitter from './Emitter'
 export default class {
   constructor (connectionUrl, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
-    if(connectionUrl.startsWith('//')){
-      const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+
+    if (connectionUrl.startsWith('//')) {
+      const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
       connectionUrl = `${scheme}://${connectionUrl}`
     }
+
     this.connectionUrl = connectionUrl
     this.opts = opts
 
@@ -93,9 +95,9 @@ export default class {
       }
     }
     if (this.mutations) {
-        this.store[this.mutations[method] || method](target, msg)
+      this.store[this.mutations[method] || method](target, msg)
     } else {
-        this.store[method](target, msg)
+      this.store[method](target, msg)
     }
   }
 }
