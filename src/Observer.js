@@ -3,6 +3,10 @@ import Emitter from './Emitter'
 export default class {
   constructor (connectionUrl, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
+    if(connectionUrl.startsWith('//')){
+      const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      connectionUrl = `${scheme}://${connectionUrl}`
+    }
     this.connectionUrl = connectionUrl
     this.opts = opts
 
