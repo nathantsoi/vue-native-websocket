@@ -21,6 +21,7 @@ export default class {
     this.connect(connectionUrl, opts)
 
     if (opts.store) { this.store = opts.store }
+    if (opts.mutations) { this.mutations = opts.mutations }
     this.onEvent()
   }
 
@@ -91,6 +92,10 @@ export default class {
         target = [msg.namespace || '', msg.action].filter((e) => !!e).join('/')
       }
     }
-    this.store[method](target, msg)
+    if (this.mutations) {
+        this.store[this.mutations[method] || method](target, msg)
+    } else {
+        this.store[method](target, msg)
+    }
   }
 }
