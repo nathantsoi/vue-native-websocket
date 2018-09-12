@@ -142,6 +142,7 @@ export default new Vuex.Store({
   },
   mutations:{
     SOCKET_ONOPEN (state, event)  {
+      Vue.prototype.$socket = event.currentTarget
       state.socket.isConnected = true
     },
     SOCKET_ONCLOSE (state, event)  {
@@ -161,6 +162,13 @@ export default new Vuex.Store({
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true;
     },
+  },
+  actions: {
+    sendMessage: function(context, message) {
+      .....
+      Vue.prototype.$socket.send(message)
+      .....
+    }
   }
 })
 ```
