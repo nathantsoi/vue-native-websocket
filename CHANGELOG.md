@@ -2,6 +2,11 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.10
+- [bugfix]: check Proxy for old browsers. tnx [@mikhailian](https://github.com/mikhailian)
+- [feature]: Handle skip scheme ws url. tnx [@denzow](https://github.com/denzow)
+- [feature]: Support for custom mutation name. thx [@OmgImAlexis](https://github.com/OmgImAlexis)
+
 ## 2.0.9
 - [bugfix]: fixed reconnection
 
