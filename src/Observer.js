@@ -95,9 +95,8 @@ export default class {
       }
     }
     if (this.mutations) {
-      this.store[this.mutations[method] || method](target, msg)
-    } else {
-      this.store[method](target, msg)
+      target = this.mutations[target] || target
     }
+    this.store[method](target, msg)
   }
 }

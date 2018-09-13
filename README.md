@@ -175,9 +175,34 @@ export default new Vuex.Store({
 ##### With custom mutation names
 
 ``` js
+// mutation-types.js
+const SOCKET_ONOPEN = '✅ Socket connected!'
+const SOCKET_ONCLOSE = '❌ Socket disconnected!'
+const SOCKET_ONERROR = '❌ Socket Error!!!'
+const SOCKET_ONMESSAGE = 'Websocket message received'
+const SOCKET_RECONNECT = 'Websocket reconnected'
+const SOCKET_RECONNECT_ERROR = 'Websocket is having issues reconnecting..'
+
+export {
+  SOCKET_ONOPEN,
+  SOCKET_ONCLOSE,
+  SOCKET_ONERROR,
+  SOCKET_ONMESSAGE,
+  SOCKET_RECONNECT,
+  SOCKET_RECONNECT_ERROR
+}
+
 // store.js
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {
+  SOCKET_ONOPEN,
+  SOCKET_ONCLOSE,
+  SOCKET_ONERROR,
+  SOCKET_ONMESSAGE,
+  SOCKET_RECONNECT,
+  SOCKET_RECONNECT_ERROR
+} from './mutation-types'
 
 Vue.use(Vuex);
 
@@ -189,46 +214,53 @@ export default new Vuex.Store({
       reconnectError: false,
     }
   },
-  mutations:{
-    SOCKET_ONOPEN (state, event)  {
+  mutations: {
+    [SOCKET_ONOPEN](state, event)  {
       state.socket.isConnected = true
     },
-    SOCKET_ONCLOSE (state, event)  {
+    [SOCKET_ONCLOSE](state, event)  {
       state.socket.isConnected = false
     },
-    SOCKET_ONERROR (state, event)  {
+    [SOCKET_ONERROR](state, event)  {
       console.error(state, event)
     },
     // default handler called for all methods
-    SOCKET_ONMESSAGE (state, message)  {
+    [SOCKET_ONMESSAGE](state, message)  {
       state.socket.message = message
     },
     // mutations for reconnect methods
-    SOCKET_RECONNECT(state, count) {
+    [SOCKET_RECONNECT](state, count) {
       console.info(state, count)
     },
-    SOCKET_RECONNECT_ERROR(state) {
+    [SOCKET_RECONNECT_ERROR](state) {
       state.socket.reconnectError = true;
-    },
+    }
   }
 })
 
 // index.js
 import store from './store'
+import {
+  SOCKET_ONOPEN,
+  SOCKET_ONCLOSE,
+  SOCKET_ONERROR,
+  SOCKET_ONMESSAGE,
+  SOCKET_RECONNECT,
+  SOCKET_RECONNECT_ERROR
+} from './mutation-types'
 
 const mutations = {
-    SOCKET_ONOPEN: '✅ Socket connected!',
-    SOCKET_ONCLOSE: '❌ Socket disconnected!',
-    SOCKET_ONERROR: '❌ Socket Error!!!',
-    SOCKET_ONMESSAGE: 'Websocket message received',
-    SOCKET_RECONNECT: 'Websocket reconnected',
-    SOCKET_RECONNECT_ERROR: 'Websocket is having issues reconnecting..'
-};
+  SOCKET_ONOPEN,
+  SOCKET_ONCLOSE,
+  SOCKET_ONERROR,
+  SOCKET_ONMESSAGE,
+  SOCKET_RECONNECT,
+  SOCKET_RECONNECT_ERROR
+}
 
 Vue.use(VueNativeSock, 'ws://localhost:9090', {
-    store: store,
-    format: 'json',
-    mutations: mutations
+  store: store,
+  mutations: mutations
 })
 ```
 
