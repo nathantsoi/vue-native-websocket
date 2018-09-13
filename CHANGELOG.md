@@ -2,6 +2,9 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.11
+- [bugfix]: custom mutation name. tnx [@sharkykh](https://github.com/sharkykh)
+
 ## 2.0.10
 - [bugfix]: check Proxy for old browsers. tnx [@mikhailian](https://github.com/mikhailian)
 - [feature]: Handle skip scheme ws url. tnx [@denzow](https://github.com/denzow)
