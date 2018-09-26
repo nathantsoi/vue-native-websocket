@@ -67,7 +67,10 @@ Vue.use(VueNativeSock, 'ws://localhost:9090', {
   connectManually: true,
 })
 const vm = new Vue()
+// Connect to the websocket target specified in the configuration
 vm.$connect()
+// Connect to an alternative websocket URL and Options e.g.
+vm.$connect('ws://localhost:9090/alternative/connection/', { format: 'json' })
 // do stuff with WebSockets
 vm.$disconnect()
 ```
