@@ -13,11 +13,8 @@ export default {
     }
 
     if (opts.connectManually) {
-      Vue.prototype.$connect = (connectionAlternative) => {
-        if (connectionAlternative) {
-          connection = connectionAlternative
-        }
-        observer = new Observer(connection, opts)
+      Vue.prototype.$connect = (connectionUrl = connection, connectionOpts = opts) => {
+        observer = new Observer(connectionUrl, connectionOpts)
         Vue.prototype.$socket = observer.WebSocket
       }
 
