@@ -2,6 +2,10 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.12
+- [feature]: Manual connect can supports options and diferent url. tnx [@pmarais](https://github.com/pmarais)
+
+
 ## 2.0.11
 - [bugfix]: custom mutation name. tnx [@sharkykh](https://github.com/sharkykh)
 
