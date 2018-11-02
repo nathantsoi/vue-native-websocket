@@ -56,6 +56,13 @@ export default {
           }
         } else {
           Object.seal(this.$options.sockets)
+          
+          // if !hasProxy need addListener
+          if (sockets) {
+            Object.keys(sockets).forEach(key => {
+              Emitter.addListener(key, sockets[key], vm)
+            })
+          }
         }
       },
       beforeDestroy () {
