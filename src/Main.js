@@ -14,6 +14,7 @@ export default {
 
     if (opts.connectManually) {
       Vue.prototype.$connect = (connectionUrl = connection, connectionOpts = opts) => {
+        connectionOpts.$setInstance = opts.$setInstance
         observer = new Observer(connectionUrl, connectionOpts)
         Vue.prototype.$socket = observer.WebSocket
       }
