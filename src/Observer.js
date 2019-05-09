@@ -6,7 +6,7 @@ export default class {
 
     if (connectionUrl.startsWith('//')) {
       const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
-      connectionUrl = `${scheme}://${connectionUrl}`
+      connectionUrl = `${scheme}:${connectionUrl}`
     }
 
     this.connectionUrl = connectionUrl
