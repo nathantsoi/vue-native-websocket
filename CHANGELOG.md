@@ -2,6 +2,12 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 2.0.14
+- [feature]: Bug fixes. tnx [@dennisreimann ](https://github.com/dennisreimann)
+
+## 2.0.13
+- [feature]: Bug fixes.
+
 ## 2.0.12
 - [feature]: Manual connect can supports options and diferent url. tnx [@pmarais](https://github.com/pmarais)
 
