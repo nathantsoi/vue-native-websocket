@@ -4,7 +4,7 @@ import Emitter from './Emitter'
 export default {
 
   install (Vue, connection, opts = {}) {
-    if (!connection) { throw new Error('[vue-native-socket] cannot locate connection') }
+    if (!connection && !opts.connectManually) { throw new Error('[vue-native-socket] cannot locate connection') }
 
     let observer = null
 
