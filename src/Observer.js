@@ -1,5 +1,8 @@
 import Emitter from './Emitter'
 
+const commit = 'commit'
+const dispatch = 'dispatch'
+
 export default class {
   constructor (connectionUrl, opts = {}) {
     this.format = opts.format && opts.format.toLowerCase()
@@ -22,8 +25,19 @@ export default class {
 
     this.connect(connectionUrl, opts)
 
-    if (opts.store) { this.store = opts.store }
-    if (opts.mutations) { this.mutations = opts.mutations }
+    if (opts.store) {
+      this.store = opts.store
+      if ((opts.storeMethodType && opts.storeMethodType == dispatch) || opts.storeMethodType === commit) {
+        this.storeMethodType = opts.storeMethodType
+      } else {
+        this.storeMethodType = commit
+      }
+    }
+    if (opts.mutations) {
+      console.warn('vue-native-websocket plugin: mutations will be deprecated, please switch to methods')
+      this.methods = opts.mutations
+    }
+    if (opts.methods) { this.methods = opts.methods }
     this.onEvent()
   }
 
@@ -82,20 +96,21 @@ export default class {
 
   defaultPassToStore (eventName, event) {
     if (!eventName.startsWith('SOCKET_')) { return }
-    let method = 'commit'
+    let method = this.storeMethodType
     let target = eventName.toUpperCase()
     let msg = event
     if (this.format === 'json' && event.data) {
       msg = JSON.parse(event.data)
       if (msg.mutation) {
+        method = commit
         target = [msg.namespace || '', msg.mutation].filter((e) => !!e).join('/')
       } else if (msg.action) {
-        method = 'dispatch'
+        method = dispatch
         target = [msg.namespace || '', msg.action].filter((e) => !!e).join('/')
       }
     }
-    if (this.mutations) {
-      target = this.mutations[target] || target
+    if (this.methods) {
+      target = this.methods[target] || target
     }
     this.store[method](target, msg)
   }
