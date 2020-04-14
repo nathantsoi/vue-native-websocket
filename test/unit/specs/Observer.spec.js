@@ -96,7 +96,9 @@ describe('Observer.js', () => {
     let expectedMsg = 'hello world'
     let mockStore = sinon.mock({ 
       commit: () => {},
-      dispatch: () => {}
+      dispatch: (event) => {
+        expect(event.data == expectedMsg)
+      }
     })
     mockStore.expects('dispatch').withArgs('SOCKET_ONOPEN')
     mockStore.expects('dispatch').withArgs('SOCKET_ONMESSAGE')
