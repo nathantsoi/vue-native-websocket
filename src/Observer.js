@@ -26,6 +26,7 @@ export default class {
     this.connect(connectionUrl, opts)
 
     if (opts.store) {
+      this.store = opts.store
       if ((opts.storeMethodType && opts.storeMethodType == dispatch) || opts.storeMethodType === commit) {
         this.storeMethodType = opts.storeMethodType
       } else {
@@ -113,5 +114,4 @@ export default class {
     }
     this.store[method](target, msg)
   }
-}
 }
