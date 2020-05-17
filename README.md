@@ -168,7 +168,7 @@ export default new Vuex.Store({
   actions: {
     sendMessage: function(context, message) {
       .....
-      Vue.prototype.$socket.send(message)
+      Vue.prototype.$socket.sendObj(message)
       .....
     }
   }
