@@ -2,6 +2,9 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 3.0.0
+* [feature]: **Use vue 3 + TypeScript to reconstruct the original plugin:** Delete the obsolete vue 2 method in the code and replace it with the wording supported by vue 3
+
 ## 2.0.14
 - [feature]: Bug fixes. tnx [@dennisreimann ](https://github.com/dennisreimann)
 
