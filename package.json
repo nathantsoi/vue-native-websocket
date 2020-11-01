@@ -1,8 +1,8 @@
 {
   "name": "vue-native-websocket",
-  "version": "2.0.14",
+  "version": "3.0.0",
   "description": "native websocket implemantation for vuejs and vuex",
-  "main": "dist/build.js",
+  "main": "dist/Main.js",
   "scripts": {
     "build": "eslint --ext .js src && webpack --progress --hide-modules",
     "lint": "eslint --ext .js src",
