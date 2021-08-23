@@ -3,30 +3,37 @@
 This package is [semantic versioned](http://semver.org/)
 
 ## 2.0.14
+
 - [feature]: Bug fixes. tnx [@dennisreimann ](https://github.com/dennisreimann)
 
 ## 2.0.13
+
 - [feature]: Bug fixes.
 
 ## 2.0.12
+
 - [feature]: Manual connect can supports options and diferent url. tnx [@pmarais](https://github.com/pmarais)
 
-
 ## 2.0.11
+
 - [bugfix]: custom mutation name. tnx [@sharkykh](https://github.com/sharkykh)
 
 ## 2.0.10
+
 - [bugfix]: check Proxy for old browsers. tnx [@mikhailian](https://github.com/mikhailian)
 - [feature]: Handle skip scheme ws url. tnx [@denzow](https://github.com/denzow)
 - [feature]: Support for custom mutation name. thx [@OmgImAlexis](https://github.com/OmgImAlexis)
 
 ## 2.0.9
+
 - [bugfix]: fixed reconnection
 
 ## 2.0.8
+
 - [feature]: custom pass to store logic. Defaults to original passToStore code if no custom logic provided
 
 ## 2.0.7
+
 - [feature]: manual connect/disconnect
 
 ## 2.0.6
@@ -54,7 +61,7 @@ This package is [semantic versioned](http://semver.org/)
 
 ## 2.0.0
 
-- [api change]: move `store` and `protocol` options from arguments to the  opts` hash
+- [api change]: move `store` and `protocol` options from arguments to the opts` hash
 
 e.g. for an instantiation in 1.0.0 like:
 
