@@ -1,7 +1,6 @@
 # vue-native-websocket &middot; [![Build Status](https://travis-ci.org/nathantsoi/vue-native-websocket.svg?branch=master)](https://travis-ci.org/nathantsoi/vue-native-websocket) [![npm version](https://img.shields.io/npm/v/vue-native-websocket.svg?style=flat)](https://www.npmjs.com/package/vue-native-websocket)
 
 native websocket implementation for Vuejs 2 and Vuex (not supported v3)
-N
 
 ## Install
 
