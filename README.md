@@ -6,9 +6,11 @@ native websocket implementation for Vuejs 2 and Vuex (not supported v3)
 
 ```bash
 yarn add vue-native-websocket
+```
 
 # or
 
+```bash
 npm install vue-native-websocket --save
 ```
 
