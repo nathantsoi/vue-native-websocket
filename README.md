@@ -197,7 +197,7 @@ export {
   SOCKET_RECONNECT_ERROR,
 };
 
-// file: store.js
+// file source: store.js
 import Vue from "vue";
 import Vuex from "vuex";
 import {
