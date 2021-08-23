@@ -180,7 +180,7 @@ export default new Vuex.Store({
 ##### With custom mutation names
 
 ```js
-// mutation-types.js
+// mutation-types.js // or
 const SOCKET_ONOPEN = "✅ Socket connected!";
 const SOCKET_ONCLOSE = "❌ Socket disconnected!";
 const SOCKET_ONERROR = "❌ Socket Error!!!";
