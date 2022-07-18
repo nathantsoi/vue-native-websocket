@@ -34,8 +34,8 @@ export default {
 
     Vue.mixin({
       created () {
-        let vm = this
-        let sockets = this.$options['sockets']
+        const vm = this
+        const sockets = this.$options.sockets
 
         if (hasProxy) {
           this.$options.sockets = new Proxy({}, {
@@ -68,7 +68,7 @@ export default {
       },
       beforeDestroy () {
         if (hasProxy) {
-          let sockets = this.$options['sockets']
+          const sockets = this.$options.sockets
 
           if (sockets) {
             Object.keys(sockets).forEach((key) => {

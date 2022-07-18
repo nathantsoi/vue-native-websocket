@@ -1,36 +1,31 @@
 var path = require('path')
-var webpack = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: ['./src/Main.js'],
+  mode: 'production',
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'build.js',
     library: ['VueNativeSock'],
     libraryTarget: 'umd'
   },
-  devtool: "source-map",
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    })
-  ],
+  devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()]
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
+        use: ['babel-loader']
       }
     ]
   }
