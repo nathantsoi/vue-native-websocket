@@ -740,6 +740,18 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.18.6"
 
+"@babel/plugin-transform-runtime@^7.18.9":
+  version "7.18.9"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-runtime/-/plugin-transform-runtime-7.18.9.tgz#d9e4b1b25719307bfafbf43065ed7fb3a83adb8f"
+  integrity sha512-wS8uJwBt7/b/mzE13ktsJdmS4JP/j7PQSaADtnb4I2wL0zK51MQ0pmF8/Jy0wUIS96fr+fXT6S/ifiPXnvrlSg==
+  dependencies:
+    "@babel/helper-module-imports" "^7.18.6"
+    "@babel/helper-plugin-utils" "^7.18.9"
+    babel-plugin-polyfill-corejs2 "^0.3.1"
+    babel-plugin-polyfill-corejs3 "^0.5.2"
+    babel-plugin-polyfill-regenerator "^0.3.1"
+    semver "^6.3.0"
+
 "@babel/plugin-transform-shorthand-properties@^7.18.6":
   version "7.18.6"
   resolved "https://registry.npmjs.org/@babel/plugin-transform-shorthand-properties/-/plugin-transform-shorthand-properties-7.18.6.tgz"
@@ -1729,13 +1741,6 @@ debug@4.3.3:
   dependencies:
     ms "2.1.2"
 
-debug@=3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/debug/-/debug-3.1.0.tgz"
-  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-  dependencies:
-    ms "2.0.0"
-
 debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.npmjs.org/debug/-/debug-3.2.7.tgz"
@@ -2265,11 +2270,9 @@ flatted@^3.1.0, flatted@^3.2.5:
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
 
 follow-redirects@^1.0.0:
-  version "1.5.8"
-  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.5.8.tgz"
-  integrity sha512-sy1mXPmv7kLAMKW/8XofG7o9T+6gAjzdZK4AJF6ryqQYUa/hnzgiypoeUecZ53x7XiqKNEpNqLtS97MshW2nxg==
-  dependencies:
-    debug "=3.1.0"
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity "sha1-DKakUjBsmyduTTEnSD4pV14getU= sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA=="
 
 fs-extra@^10.1.0:
   version "10.1.0"

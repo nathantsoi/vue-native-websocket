@@ -20,10 +20,10 @@ export default {
       }
 
       Vue.prototype.$disconnect = () => {
-        if (observer && observer.reconnection) { 
+        if (observer && observer.reconnection) {
           observer.reconnection = false
           clearTimeout(observer.reconnectTimeoutId)
-         }
+        }
         if (Vue.prototype.$socket) {
           Vue.prototype.$socket.close()
           delete Vue.prototype.$socket

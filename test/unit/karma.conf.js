@@ -1,6 +1,6 @@
 var webpackConfig = require('../../webpack.config.js')
 
-module.exports = function (config) {
+module.exports = (config) => {
   configuration = {
     browsers: [
       //'Chrome'
