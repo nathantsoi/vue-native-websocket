@@ -28,7 +28,7 @@ export default class {
   }
 
   connect (connectionUrl, opts = {}) {
-    let protocol = opts.protocol || ''
+    const protocol = opts.protocol || ''
     this.WebSocket = opts.WebSocket || (protocol === '' ? new WebSocket(connectionUrl) : new WebSocket(connectionUrl, protocol))
     if (this.format === 'json') {
       if (!('sendObj' in this.WebSocket)) {
