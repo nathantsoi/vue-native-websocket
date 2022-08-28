@@ -92,6 +92,38 @@ describe('Observer.js', () => {
   })
 
   // TODO: DRY
+  it('passes an action to the provided vuex store', (done) => {
+    let expectedMsg = 'hello world'
+    let mockStore = sinon.mock({ 
+      commit: () => {},
+      dispatch: (event) => {
+        expect(event.data == expectedMsg)
+      }
+    })
+    mockStore.expects('dispatch').withArgs('SOCKET_ONOPEN')
+    mockStore.expects('dispatch').withArgs('SOCKET_ONMESSAGE')
+
+    mockServer = new Server(wsUrl)
+    mockServer.on('connection', ws => {
+      ws.send(expectedMsg)
+    })
+
+    Vue.use(VueNativeSock, wsUrl)
+    let vm = new Vue()
+    observer = new Observer(wsUrl, {
+      store: mockStore.object,
+      storeMethodType: 'dispatch',
+      websocket: new WebSocket(wsUrl)
+    })
+
+    setTimeout(() => {
+      mockStore.verify()
+      mockServer.stop(done)
+    }, 100)
+  })
+
+
+  // TODO: DRY
   it('passes a namespaced json commit to the provided vuex store', (done) => {
     let expectedMsg = { namespace: 'users', mutation: 'setName', value: 'steve' }
     let mockStore = sinon.mock({ commit: () => {} })
