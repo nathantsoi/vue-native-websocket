@@ -8,30 +8,37 @@ export default {
 
     let observer = null
 
+    let isVue3 = false
+    const version = Number(Vue.version.split('.')[0])
+    if (version >= 3) {
+      isVue3 = true
+    }
+    const globalPrototype = isVue3 ? Vue.config.globalProperties : Vue.prototype
+
     opts.$setInstance = (wsInstance) => {
-      Vue.prototype.$socket = wsInstance
+      globalPrototype.$socket = wsInstance
     }
 
     if (opts.connectManually) {
-      Vue.prototype.$connect = (connectionUrl = connection, connectionOpts = opts) => {
+      globalPrototype.$connect = (connectionUrl = connection, connectionOpts = opts) => {
         connectionOpts.$setInstance = opts.$setInstance
         observer = new Observer(connectionUrl, connectionOpts)
-        Vue.prototype.$socket = observer.WebSocket
+        globalPrototype.$socket = observer.WebSocket
       }
 
-      Vue.prototype.$disconnect = () => {
+      globalPrototype.$disconnect = () => {
         if (observer && observer.reconnection) {
           observer.reconnection = false
           clearTimeout(observer.reconnectTimeoutId)
         }
-        if (Vue.prototype.$socket) {
-          Vue.prototype.$socket.close()
-          delete Vue.prototype.$socket
+        if (globalPrototype.$socket) {
+          globalPrototype.$socket.close()
+          delete globalPrototype.$socket
         }
       }
     } else {
       observer = new Observer(connection, opts)
-      Vue.prototype.$socket = observer.WebSocket
+      globalPrototype.$socket = observer.WebSocket
     }
     const hasProxy = typeof Proxy !== 'undefined' && typeof Proxy === 'function' && /native code/.test(Proxy.toString())
 
@@ -69,7 +76,7 @@ export default {
           }
         }
       },
-      beforeDestroy () {
+      [isVue3 ? 'beforeUnmount' : 'beforeDestroy'] () {
         if (hasProxy) {
           const sockets = this.$options.sockets
 
