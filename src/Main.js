@@ -4,7 +4,7 @@ import Emitter from './Emitter'
 export default {
 
   install (Vue, connection, opts = {}) {
-    if (!connection) { throw new Error('[vue-native-socket] cannot locate connection') }
+    if (!connection && !opts.connectManually) { throw new Error('[vue-native-socket] cannot locate connection') }
 
     let observer = null
 
@@ -20,7 +20,10 @@ export default {
       }
 
       Vue.prototype.$disconnect = () => {
-        if (observer && observer.reconnection) { observer.reconnection = false }
+        if (observer && observer.reconnection) {
+          observer.reconnection = false
+          clearTimeout(observer.reconnectTimeoutId)
+        }
         if (Vue.prototype.$socket) {
           Vue.prototype.$socket.close()
           delete Vue.prototype.$socket
@@ -34,8 +37,8 @@ export default {
 
     Vue.mixin({
       created () {
-        let vm = this
-        let sockets = this.$options['sockets']
+        const vm = this
+        const sockets = this.$options.sockets
 
         if (hasProxy) {
           this.$options.sockets = new Proxy({}, {
@@ -68,7 +71,7 @@ export default {
       },
       beforeDestroy () {
         if (hasProxy) {
-          let sockets = this.$options['sockets']
+          const sockets = this.$options.sockets
 
           if (sockets) {
             Object.keys(sockets).forEach((key) => {

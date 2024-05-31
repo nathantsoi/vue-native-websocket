@@ -6,14 +6,14 @@ class Emitter {
   addListener (label, callback, vm) {
     if (typeof callback === 'function') {
       this.listeners.has(label) || this.listeners.set(label, [])
-      this.listeners.get(label).push({callback: callback, vm: vm})
+      this.listeners.get(label).push({ callback, vm })
       return true
     }
     return false
   }
 
   removeListener (label, callback, vm) {
-    let listeners = this.listeners.get(label)
+    const listeners = this.listeners.get(label)
     let index
 
     if (listeners && listeners.length) {
@@ -34,7 +34,7 @@ class Emitter {
   }
 
   emit (label, ...args) {
-    let listeners = this.listeners.get(label)
+    const listeners = this.listeners.get(label)
 
     if (listeners && listeners.length) {
       listeners.forEach((listener) => {
