@@ -57,15 +57,12 @@ export default {
               this.$options.sockets[key] = sockets[key]
             })
           }
-        } else {
-          Object.seal(this.$options.sockets)
-
+        } else if (sockets) {
           // if !hasProxy need addListener
-          if (sockets) {
-            Object.keys(sockets).forEach(key => {
-              Emitter.addListener(key, sockets[key], vm)
-            })
-          }
+          Object.seal(this.$options.sockets)
+          Object.keys(sockets).forEach(key => {
+            Emitter.addListener(key, sockets[key], vm)
+          })
         }
       },
       beforeDestroy () {
