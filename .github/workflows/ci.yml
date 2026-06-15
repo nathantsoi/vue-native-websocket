@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build package
+        run: npm run build
+
+      - name: Audit
+        run: npm audit
+
+      - name: Verify package contents
+        run: npm pack --dry-run
+
+      - name: Install example
+        run: npm --prefix examples/vue3-vite ci
+
+      - name: Typecheck example
+        run: npm --prefix examples/vue3-vite run typecheck
+
+      - name: Build example
+        run: npm --prefix examples/vue3-vite run build

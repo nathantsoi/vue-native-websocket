@@ -2,6 +2,15 @@
 
 This package is [semantic versioned](http://semver.org/)
 
+## 3.0.0
+
+- [breaking]: Vue 3 only. Vue 2 and `Vue.use(...)` are no longer supported.
+- [feature]: TypeScript source with generated declaration files.
+- [feature]: New `createSocketPlugin(...)` and `useSocket()` APIs.
+- [feature]: Reactive socket state, JSON send/receive helpers, reconnect hooks, and store-agnostic event hooks.
+- [build]: Replace webpack, Babel, and Karma with Vite, TypeScript, ESLint flat config, and Vitest.
+- [build]: Add GitHub Actions CI and a Vite + Vue 3 consumer example.
+
 ## 2.0.14
 
 - [feature]: Bug fixes. tnx [@dennisreimann ](https://github.com/dennisreimann)

@@ -1,350 +1,234 @@
-# vue-native-websocket &middot; [![Build Status](https://travis-ci.org/nathantsoi/vue-native-websocket.svg?branch=master)](https://travis-ci.org/nathantsoi/vue-native-websocket) [![npm version](https://img.shields.io/npm/v/vue-native-websocket.svg?style=flat)](https://www.npmjs.com/package/vue-native-websocket)
+# vue-native-websocket
 
-native websocket implementation for Vuejs 2 and Vuex
+Native WebSocket client for Vue 3 with a plugin API, Composition API composable,
+reactive connection state, JSON helpers, reconnect support, and store-agnostic
+event hooks.
 
 ## Install
+
+```bash
+npm install vue-native-websocket
+```
 
 ```bash
 yarn add vue-native-websocket
 ```
 
-# or
+## Vue 3 quick start
+
+```ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import { createSocketPlugin } from 'vue-native-websocket'
+
+createApp(App)
+  .use(createSocketPlugin({
+    url: 'ws://localhost:9090'
+  }))
+  .mount('#app')
+```
+
+Use the shared socket client from any component setup function:
+
+```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useSocket } from 'vue-native-websocket'
+
+const socket = useSocket()
+const isConnected = computed(() => socket.status.value === 'open')
+
+function sendPing () {
+  socket.sendJson({ type: 'ping' })
+}
+</script>
+
+<template>
+  <button :disabled="!isConnected" @click="sendPing">
+    Ping
+  </button>
+</template>
+```
+
+## Manual connections
+
+```ts
+import { createSocketPlugin } from 'vue-native-websocket'
+
+app.use(createSocketPlugin({
+  url: 'ws://localhost:9090',
+  connectManually: true
+}))
+```
+
+```ts
+const socket = useSocket()
+
+socket.connect()
+socket.connect('ws://localhost:9090/alternative')
+socket.disconnect()
+```
+
+For Options API components, the plugin also exposes global properties:
+
+```ts
+this.$connect()
+this.$send('hello')
+this.$sendJson({ hello: 'world' })
+this.$disconnect()
+```
+
+## Reactive state
+
+`useSocket()` returns a shared client with these refs:
+
+```ts
+const {
+  socket,
+  status,
+  lastMessage,
+  lastJsonMessage,
+  error,
+  reconnectAttempt
+} = useSocket()
+```
+
+`status` is one of:
+
+```ts
+'idle' | 'connecting' | 'open' | 'closing' | 'closed' | 'reconnecting' | 'error'
+```
+
+## Event hooks
+
+Hooks can be configured when the plugin is installed:
+
+```ts
+app.use(createSocketPlugin({
+  url: 'ws://localhost:9090',
+  protocols: 'my-protocol',
+  onOpen: event => {
+    console.info('socket opened', event)
+  },
+  onMessage: (event, client, json) => {
+    console.info('message', event.data, json)
+  },
+  onClose: event => {
+    console.info('socket closed', event)
+  },
+  onError: event => {
+    console.error('socket error', event)
+  }
+}))
+```
+
+Hooks can also be registered from a component. Each hook returns an unsubscribe
+function.
+
+```ts
+import { onUnmounted } from 'vue'
+import { useSocket } from 'vue-native-websocket'
+
+const socket = useSocket()
+
+const unsubscribe = socket.onMessage((event, client, json) => {
+  console.log(event.data, json)
+})
+
+onUnmounted(unsubscribe)
+```
+
+## Reconnect
+
+```ts
+app.use(createSocketPlugin({
+  url: 'ws://localhost:9090',
+  reconnect: true,
+  reconnectAttempts: 5,
+  reconnectDelay: 3000,
+  onReconnect: attempt => {
+    console.info('reconnecting', attempt)
+  },
+  onReconnectError: attempt => {
+    console.error('reconnect failed after attempt', attempt)
+  }
+}))
+```
+
+The legacy option names `protocol`, `reconnection`, `reconnectionAttempts`, and
+`reconnectionDelay` are accepted as aliases.
+
+## Store integration
+
+The library no longer commits directly to Vuex. Use hooks to connect the socket
+to Pinia, Vuex, or any other store.
+
+Pinia example:
+
+```ts
+import { useChatStore } from './stores/chat'
+
+const chat = useChatStore()
+
+app.use(createSocketPlugin({
+  url: 'ws://localhost:9090',
+  onOpen: () => chat.setConnected(true),
+  onClose: () => chat.setConnected(false),
+  onMessage: (event, client, json) => {
+    chat.receive(json ?? event.data)
+  }
+}))
+```
+
+Vuex example:
+
+```ts
+app.use(createSocketPlugin({
+  url: 'ws://localhost:9090',
+  onOpen: event => store.commit('SOCKET_ONOPEN', event),
+  onClose: event => store.commit('SOCKET_ONCLOSE', event),
+  onError: event => store.commit('SOCKET_ONERROR', event),
+  onMessage: (event, client, json) => {
+    store.commit('SOCKET_ONMESSAGE', json ?? event)
+  }
+}))
+```
+
+## Build from source
 
 ```bash
-npm install vue-native-websocket --save
+npm install
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
-## Usage
+The package is built with Vite library mode and publishes ESM, CJS, UMD, and
+TypeScript declaration outputs.
 
-#### Configuration
+## Example app
 
-Automatic socket connection from an URL string
+A Vite + Vue 3 consumer example lives in `examples/vue3-vite`. It connects to
+the public `wss://echo.websocket.org` test endpoint, so `Send ping` should echo
+the same JSON payload back into the event log.
 
-```js
-import VueNativeSock from "vue-native-websocket";
-Vue.use(VueNativeSock, "ws://localhost:9090");
+```bash
+npm --prefix examples/vue3-vite install
+npm --prefix examples/vue3-vite run dev
+npm --prefix examples/vue3-vite run typecheck
+npm --prefix examples/vue3-vite run build
 ```
 
-Enable Vuex integration, where `'./store'` is your local apps store:
+## Breaking changes in v3
 
-```js
-import store from "./store";
-Vue.use(VueNativeSock, "ws://localhost:9090", { store: store });
-```
+- Vue 2 is no longer supported.
+- `Vue.use(...)` is replaced by `app.use(createSocketPlugin(...))`.
+- Vuex automatic `commit`/`dispatch` handling has been removed.
+- Dynamic `this.$options.sockets` listeners have been removed.
+- TypeScript is now the source of truth and generated declarations are included
+  in the package.
 
-Set sub-protocol, this is optional option and default is empty string.
+## License
 
-```js
-import VueNativeSock from "vue-native-websocket";
-Vue.use(VueNativeSock, "ws://localhost:9090", { protocol: "my-protocol" });
-```
-
-Optionally enable JSON message passing:
-
-```js
-Vue.use(VueNativeSock, "ws://localhost:9090", { format: "json" });
-```
-
-JSON message passing with a store:
-
-```js
-import store from "./store";
-Vue.use(VueNativeSock, "ws://localhost:9090", { store: store, format: "json" });
-```
-
-Enable ws reconnect automatically:
-
-```js
-Vue.use(VueNativeSock, "ws://localhost:9090", {
-  reconnection: true, // (Boolean) whether to reconnect automatically (false)
-  reconnectionAttempts: 5, // (Number) number of reconnection attempts before giving up (Infinity),
-  reconnectionDelay: 3000, // (Number) how long to initially wait before attempting a new (1000)
-});
-```
-
-Manage connection manually:
-
-```js
-Vue.use(VueNativeSock, "ws://localhost:9090", {
-  connectManually: true,
-});
-const vm = new Vue();
-// Connect to the websocket target specified in the configuration
-vm.$connect();
-// Connect to an alternative websocket URL and Options e.g.
-vm.$connect("ws://localhost:9090/alternative/connection/", { format: "json" });
-// do stuff with WebSockets
-vm.$disconnect();
-```
-
-#### On Vuejs instance usage
-
-```js
-var vm = new Vue({
-  methods: {
-    clickButton: function (val) {
-      // $socket is [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) instance
-      this.$socket.send("some data");
-      // or with {format: 'json'} enabled
-      this.$socket.sendObj({ awesome: "data" });
-    },
-  },
-});
-```
-
-#### Dynamic socket event listeners
-
-Create a new listener, for example:
-
-```js
-this.$options.sockets.onmessage = (data) => console.log(data);
-```
-
-Remove existing listener
-
-```js
-delete this.$options.sockets.onmessage;
-```
-
-#### Vuex Store integration
-
-Vuex integration works differently depending on if you've enabled a format
-
-##### Without a format enabled
-
-Socket events will commit mutations on the root store corresponding to the following events
-
-`SOCKET_ONOPEN`
-
-`SOCKET_ONCLOSE`
-
-`SOCKET_ONERROR`
-
-`SOCKET_ONMESSAGE`
-
-Each callback is passed the raw websocket event object
-
-Update state in the open, close and error callbacks. You can also check the socket state directly with the `this.$socket` object on the main Vue object.
-
-Handle all the data in the `SOCKET_ONMESSAGE` mutation.
-
-Reconect events will commit mutations `SOCKET_RECONNECT` and `SOCKET_RECONNECT_ERROR`.
-
-```js
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {
-    socket: {
-      isConnected: false,
-      message: '',
-      reconnectError: false,
-    }
-  },
-  mutations:{
-    SOCKET_ONOPEN (state, event)  {
-      Vue.prototype.$socket = event.currentTarget
-      state.socket.isConnected = true
-    },
-    SOCKET_ONCLOSE (state, event)  {
-      state.socket.isConnected = false
-    },
-    SOCKET_ONERROR (state, event)  {
-      console.error(state, event)
-    },
-    // default handler called for all methods
-    SOCKET_ONMESSAGE (state, message)  {
-      state.socket.message = message
-    },
-    // mutations for reconnect methods
-    SOCKET_RECONNECT(state, count) {
-      console.info(state, count)
-    },
-    SOCKET_RECONNECT_ERROR(state) {
-      state.socket.reconnectError = true;
-    },
-  },
-  actions: {
-    sendMessage: function(context, message) {
-      .....
-      Vue.prototype.$socket.sendObj(message)
-      .....
-    }
-  }
-})
-```
-
-##### With custom mutation names
-
-```js
-// mutation-types.js // or
-const SOCKET_ONOPEN = "✅ Socket connected!";
-const SOCKET_ONCLOSE = "❌ Socket disconnected!";
-const SOCKET_ONERROR = "❌ Socket Error!!!";
-const SOCKET_ONMESSAGE = "Websocket message received";
-const SOCKET_RECONNECT = "Websocket reconnected";
-const SOCKET_RECONNECT_ERROR = "Websocket is having issues reconnecting..";
-
-export {
-  SOCKET_ONOPEN,
-  SOCKET_ONCLOSE,
-  SOCKET_ONERROR,
-  SOCKET_ONMESSAGE,
-  SOCKET_RECONNECT,
-  SOCKET_RECONNECT_ERROR,
-};
-
-// file source: store.js v2
-import Vue from "vue";
-import Vuex from "vuex";
-import {
-  SOCKET_ONOPEN,
-  SOCKET_ONCLOSE,
-  SOCKET_ONERROR,
-  SOCKET_ONMESSAGE,
-  SOCKET_RECONNECT,
-  SOCKET_RECONNECT_ERROR,
-} from "./mutation-types";
-
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {
-    socket: {
-      isConnected: false,
-      message: "",
-      reconnectError: false,
-    },
-  },
-  mutations: {
-    [SOCKET_ONOPEN](state, event) {
-      state.socket.isConnected = true;
-    },
-    [SOCKET_ONCLOSE](state, event) {
-      state.socket.isConnected = false;
-    },
-    [SOCKET_ONERROR](state, event) {
-      console.error(state, event);
-    },
-    // default handler called for all methods
-    [SOCKET_ONMESSAGE](state, message) {
-      state.socket.message = message;
-    },
-    // mutations for reconnect methods
-    [SOCKET_RECONNECT](state, count) {
-      console.info(state, count);
-    },
-    [SOCKET_RECONNECT_ERROR](state) {
-      state.socket.reconnectError = true;
-    },
-  },
-});
-
-// index.js
-import store from "./store";
-import {
-  SOCKET_ONOPEN,
-  SOCKET_ONCLOSE,
-  SOCKET_ONERROR,
-  SOCKET_ONMESSAGE,
-  SOCKET_RECONNECT,
-  SOCKET_RECONNECT_ERROR,
-} from "./mutation-types";
-
-const mutations = {
-  SOCKET_ONOPEN,
-  SOCKET_ONCLOSE,
-  SOCKET_ONERROR,
-  SOCKET_ONMESSAGE,
-  SOCKET_RECONNECT,
-  SOCKET_RECONNECT_ERROR,
-};
-
-Vue.use(VueNativeSock, "ws://localhost:9090", {
-  store: store,
-  mutations: mutations,
-});
-```
-
-##### With `format: 'json'` enabled
-
-All data passed through the websocket is expected to be JSON.
-
-Each message is `JSON.parse`d if there is a data (content) response.
-
-If there is no data, the fallback `SOCKET_ON*` mutation is called with the original event data, as above.
-
-If there is a `.namespace` on the data, the message is sent to this `namespaced: true` store (be sure to turn this on in the store module).
-
-If there is a `.mutation` value in the response data, the corresponding mutation is called with the name `SOCKET_[mutation value]`
-
-If there is an `.action` value in the response data ie. `action: 'customerAdded'`, the corresponding action is called by name:
-
-```js
-actions: {
-    customerAdded (context) {
-      console.log('action received: customerAdded')
-    }
-  }
-```
-
-Use the `.sendObj({some: data})` method on the `$socket` object to send stringified json messages.
-
-##### Custom socket event handling
-
-Provide you own custom code to handle events received via the `passToStoreHandler` option. The function you provide will be passed the following arguments:
-
-1. event name
-2. event
-3. original/default handler code function `function (eventName, event)`. This allows you to optionally do some basic preprocessing before handing the event over to the original handler.
-
-The original passToStore code is used if no `passToStoreHandler` is configured.
-
-Here is an example of passing in a custom handler. This has the original passToStore code to give you an example of what you can do:
-
-```js
-Vue.use(VueNativeSock, "ws://localhost:9090", {
-  passToStoreHandler: function (eventName, event) {
-    if (!eventName.startsWith("SOCKET_")) {
-      return;
-    }
-    let method = "commit";
-    let target = eventName.toUpperCase();
-    let msg = event;
-    if (this.format === "json" && event.data) {
-      msg = JSON.parse(event.data);
-      if (msg.mutation) {
-        target = [msg.namespace || "", msg.mutation]
-          .filter((e) => !!e)
-          .join("/");
-      } else if (msg.action) {
-        method = "dispatch";
-        target = [msg.namespace || "", msg.action].filter((e) => !!e).join("/");
-      }
-    }
-    this.store[method](target, msg);
-  },
-});
-```
-
-Here is an example of do some preprocessing, then pass the event onto the original handler code:
-
-```js
-Vue.use(VueNativeSock, "ws://localhost:9090", {
-  passToStoreHandler: function (eventName, event, next) {
-    event.data = event.should_have_been_named_data;
-    next(eventName, event);
-  },
-});
-```
-
-## Examples
-
-TODO: post your example here!
-
-## Credits
-
-Derived from https://github.com/MetinSeylan/Vue-Socket.io
+MIT
